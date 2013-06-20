@@ -2,21 +2,19 @@
 
 namespace Barcode;
 
-class Barcode_Driver
+abstract class Barcode_Driver
 {
 	/**
 	* Driver config
 	* @var array
 	*/
-	protected $config = array(
-		'font'    => '',
-		'color'   => array(),
-		'bgcolor' => array(),
-		'height'  => '',
-		'width'   => '',
-		'scale'   => '',
-		'format'  => ''
-	);
+	protected $config = array();
+
+	/**
+	 * Driver instance
+	 * @var mixed
+	 */
+	protected $instance = null;
 
 	/**
 	* Driver constructor
@@ -53,90 +51,41 @@ class Barcode_Driver
 		return $this;
 	}
 
-	/**
-	* Set the font.
-	*
-	* @param string $font the font path or name
-	* @param mixed $auto autoload the font from vendor/WINDIR
-	* @return object $this for chaining
-	*/
-	public function set_font($font, $auto = false)
+	abstract public function init($code, $type);
+
+	public function __call($method, $arguments)
 	{
-		if ($auto)
+		if (method_exists($this->instance, $method))
 		{
-			if ($win = \Input::server('WINDIR', false) && file_exists($win))
-			{
-				return $this->set_config('font', $win . '\Fonts\\' . $font . '.ttf');
-			}
-			else
-			{
-				return $this->set_config('font', \Package::exists('barcode') . 'vendor' . DS . $font . '.ttf');
-			}
+				$return = call_user_func_array(array($this->instance, $method), $arguments);
+				return ($return) ? $return : $this;
+		}
+	}
+
+	public function __get($name)
+	{
+		if (isset($this->{$name}))
+		{
+			return $this->{$name};
+		}
+		elseif(isset($this->instance->{$name}))
+		{
+			return $this->instance->{$name};
 		}
 		else
 		{
-			return $this->set_config('font', $font);
+			return null;
 		}
 	}
 
-	/**
-	* Set the color.
-	*
-	* @param int $red The red value
-	* @param int $green The green value
-	* @param int $blue The blue value
-	* @return object $this for chaining
-	*/
-	public function set_color($red = 0, $green = 0, $blue = 0)
+	public function __set($name, $value)
 	{
-		return $this->set_config('color', array($red, $green, $blue));
-	}
-
-	/**
-	* Set the bgcolor.
-	*
-	* @param int $red The red value
-	* @param int $green The green value
-	* @param int $blue The blue value
-	* @return object $this for chaining
-	*/
-	public function set_bgcolor($red = 0, $green = 0, $blue = 0)
-	{
-		return $this->set_config('bgcolor', array($red, $green, $blue));
-	}
-
-	/**
-	* Set the colors with hex values
-	*
-	* @param string		color 		The foreground color to set (In hexadecimal values)
-	* @param string		bgcolor 	The Background color to set (In hexadecimal values)
-	* @return object $this for chaining
-	*/
-	function set_hexcolor($color, $bgcolor) {
-		$this->set_color(hexdec(\Str::sub($color, 1, 2)), hexdec(\Str::sub($color, 3, 2)), hexdec(\Str::sub($color, 5, 2)));
-		$this->set_bgcolor(hexdec(\Str::sub($bgcolor, 1, 2)), hexdec(\Str::sub($bgcolor, 3, 2)), hexdec(\Str::sub($bgcolor, 5, 2)));
-		return $this;
-	}
-
-	/**
-	* Set the scale
-	*
-	* @param int $scale The scale value
-	* @return object $this for chaining
-	*/
-	public function set_scale($scale)
-	{
-		return $this->set_config('scale', $scale);
-	}
-
-	/**
-	* Set the format (PNG, JPG)
-	*
-	* @param int $format The format value
-	* @return object $this for chaining
-	*/
-	public function set_format($format)
-	{
-		return $this->set_config('format', $format);
+		if (isset($this->{$name})) {
+			$this->{$name} = $value;
+		}
+		else
+		{
+			$this->instance->{$name} = $value;
+		}
 	}
 }
