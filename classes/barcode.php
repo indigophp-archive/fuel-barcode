@@ -9,7 +9,7 @@ class Barcode
 
 	public static function forge($driver, $config = array())
 	{
-		$class = '\\Barcode\\Barcode_' . ucfirst($driver);
+		$class = '\\Barcode\\Barcode_' . ucfirst(strtolower($driver));
 		return new $class($config);
 	}
 
