@@ -10,6 +10,12 @@ class Barcode
 	public static function forge($driver, $config = array())
 	{
 		$class = '\\Barcode\\Barcode_' . ucfirst(strtolower($driver));
+
+		if( ! class_exists($class, true))
+		{
+			throw new \FuelException('Could not find Barcode driver: ' $class);
+		}
+
 		return new $class($config);
 	}
 
