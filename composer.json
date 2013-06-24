@@ -1,7 +1,7 @@
 {
 	"name": "fuel/barcode",
 	"type": "fuel-package",
-	"description": "PDF driver for dfferent PDF libraries",
+	"description": "Barcode driver for dfferent Barcode libraries",
 	"keywords": ["PDF", "driver"],
 	"homepage": "http://fuelphp.com",
 	"license": "MIT",
