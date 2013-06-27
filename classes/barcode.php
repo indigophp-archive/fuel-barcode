@@ -13,7 +13,7 @@ class Barcode
 
 		if( ! class_exists($class, true))
 		{
-			throw new \FuelException('Could not find Barcode driver: ' $class);
+			throw new \FuelException('Could not find Barcode driver: ' . $class);
 		}
 
 		return new $class($config);
