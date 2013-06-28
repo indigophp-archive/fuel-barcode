@@ -7,7 +7,7 @@ class BarcodeException extends \FuelException {}
 class Barcode
 {
 
-	public static function forge($driver, $config = array())
+	public static function forge($driver, array $config = array())
 	{
 		$class = '\\Barcode\\Barcode_' . ucfirst(strtolower($driver));
 
