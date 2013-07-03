@@ -22,7 +22,7 @@ class Barcode
 			throw new \FuelException('Could not find Barcode driver: ' . $class);
 		}
 
-		return new $class($driver, $config);
+		return new $class($config);
 	}
 
 	/**
