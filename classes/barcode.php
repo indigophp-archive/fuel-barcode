@@ -11,7 +11,7 @@ class Barcode
 	 *
 	 * @param	string			$driver		Driver name
 	 * @param	array			$config		Extra config array
-	 * @return  Queue instance
+	 * @return  Barcode instance
 	 */
 	public static function forge($driver = 'tcpdf', array $config = array())
 	{
