@@ -23,7 +23,7 @@ abstract class Barcode_Driver
 	*/
 	public function __construct(array $config = array())
 	{
-		\Arr::merge($this->config, $config);
+		$this->config = $config;
 	}
 
 	/**
@@ -58,7 +58,11 @@ abstract class Barcode_Driver
 		if (method_exists($this->instance, $method))
 		{
 				$return = call_user_func_array(array($this->instance, $method), $arguments);
-				return ($return) ? $return : $this;
+				return $return;
+		}
+		else
+		{
+			throw new \BadMethodCallException('Invalid method: '.get_called_class().'::'.$method);
 		}
 	}
 

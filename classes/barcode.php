@@ -7,7 +7,14 @@ class BarcodeException extends \FuelException {}
 class Barcode
 {
 
-	public static function forge($driver, array $config = array())
+	/**
+	 * Barcode driver forge.
+	 *
+	 * @param	string			$driver		Driver name
+	 * @param	mixed			$config		Extra config array or the driver
+	 * @return  Queue instance
+	 */
+	public static function forge($driver = 'tcpdf', array $config = array())
 	{
 		$class = '\\Barcode\\Barcode_' . ucfirst(strtolower($driver));
 
@@ -16,7 +23,7 @@ class Barcode
 			throw new \FuelException('Could not find Barcode driver: ' . $class);
 		}
 
-		return new $class($config);
+		return new $class($driver, $config);
 	}
 
 	/**
