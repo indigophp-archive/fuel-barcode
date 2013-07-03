@@ -6,7 +6,6 @@ class BarcodeException extends \FuelException {}
 
 class Barcode
 {
-
 	/**
 	 * Barcode driver forge.
 	 *
