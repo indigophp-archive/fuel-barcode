@@ -51,7 +51,14 @@ abstract class Barcode_Driver
 		return $this;
 	}
 
+	/**
+	 * Initialize driver
+	 * @param  string $code Barcode data
+	 * @param  string $type Barcode type
+	 * @return mixed
+	 */
 	abstract public function init($code, $type);
+
 
 	public function __call($method, $arguments)
 	{
@@ -78,6 +85,7 @@ abstract class Barcode_Driver
 		}
 		else
 		{
+			trigger_error('Undefined property: ' . get_called_class() . '::' . $name);
 			return null;
 		}
 	}
