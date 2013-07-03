@@ -10,7 +10,7 @@ class Barcode
 	 * Barcode driver forge.
 	 *
 	 * @param	string			$driver		Driver name
-	 * @param	mixed			$config		Extra config array or the driver
+	 * @param	mixed			$config		Extra config array
 	 * @return  Queue instance
 	 */
 	public static function forge($driver = 'tcpdf', array $config = array())
