@@ -2,103 +2,46 @@
 
 namespace Barcode;
 
-class Controller_Barcode_Tcpdf extends \Controller
+class Controller_Barcode_Tcpdf extends Controller_Barcode
 {
-
-	protected $barcode;
-
-	protected $data = array(
-		'type'   => 'c39',
-		'ext'    => 'png',
-		'width'  => 2,
-		'height' => 30,
-		'color'  => 'black'
-	);
-
 	public function before($data = null)
 	{
-		parent::before($data);
-
 		$this->barcode = Barcode::forge('tcpdf');
 
-		if ( ! $this->request->is_hmvc())
+		return parent::before($data);
+	}
+
+	public function png()
+	{
+		$data = func_get_args();
+
+		if (isset($data[2]))
 		{
-			$data = array(
-				'code'   => \Input::param('code'),
-				'type'   => \Input::param('type', 'c39'),
-				'ext'    => \Input::param('ext', \Input::extension()),
-				'width'  => \Input::param('width', \Input::param('w', 2)),
-				'height' => \Input::param('height', \Input::param('h', 30)),
-				'color'  => \Input::param('color', \Input::param('c', 'black'))
-			);
-			$this->data = \Arr::merge($this->data, $data);
-		}
-
-		$this->data = \Arr::merge($this->data, \Uri::to_assoc(4));
-
-		if ($this->get('ext') == 'png') {
-			$color = \Arr::get($this->data, 'color', '');
-
-			if (is_string($color) && strpos($color, '|') !== false)
+			if (is_string($data[2]) and strpos($data[2], '|'))
 			{
-				\Arr::set($this->data, 'color', explode('|', $color));
+				$data[2] = explode('|', $data[2]);
+			}
+			else
+			{
+				$data[2] = array(0, 0, 0);
 			}
 		}
 
-		$this->barcode->init($this->get('code'), $this->get('type'));
+		return call_user_func_array(array($this->barcode, 'getBarcodePNG'), $data);
 	}
 
-	public function get($item)
+	public function svg()
 	{
-		return \Arr::get($this->data, $item);
+		return call_user_func_array(array($this->barcode, 'getBarcodeSVG'), func_get_args());
 	}
 
-	public function action_index()
+	public function svgi()
 	{
-
-		switch ($this->get('ext')) {
-			case 'png':
-				$this->action_png();
-				break;
-
-			case 'svg':
-				$this->action_svg();
-				break;
-
-			case 'svgi':
-				$this->action_svgi();
-				break;
-
-			case 'html':
-				return $this->action_html();
-				break;
-
-			default:
-				$this->action_png();
-				break;
-		}
+		return call_user_func_array(array($this->barcode, 'getBarcodeSVGcode'), func_get_args());
 	}
 
-	public function action_png()
+	public function html()
 	{
-		$color = $this->get('color');
-		! is_array($color) && $color = array(0, 0, 0);
-
-		$this->barcode->getBarcodePNG($this->get('width'), $this->get('height'), $color);
-	}
-
-	public function action_svg()
-	{
-	$this->barcode->getBarcodeSVG($this->get('width'), $this->get('height'), $this->get('color'));
-	}
-
-	public function action_svgi()
-	{
-		$this->barcode->getBarcodeSVGcode($this->get('width'), $this->get('height'), $this->get('color'));
-	}
-
-	public function action_html()
-	{
-		return $this->barcode->getBarcodeHTML($this->get('width'), $this->get('height'), $this->get('color'));
+		return call_user_func_array(array($this->barcode, 'getBarcodeHTML'), func_get_args());
 	}
 }
